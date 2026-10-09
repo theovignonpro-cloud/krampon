@@ -6,6 +6,7 @@ const WEIGHTS: Record<ActionType, Partial<Record<Position, number>> & { default?
   tir_cadre:        { default: 0.2 },
   tir_non_cadre:    { default: -0.05 },
   duel_gagne:       { DEF: 0.2, default: 0.15 },
+  duel_perdu:       { DEF: -0.2, default: -0.1 },
   recuperation:     { DEF: 0.25, MIL: 0.2, default: 0.15 },
   ballon_perdu:     { default: -0.15 },
   arret:            { GK: 0.4, default: 0 },

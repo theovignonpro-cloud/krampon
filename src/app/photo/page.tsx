@@ -17,36 +17,39 @@ export default function PhotoPage() {
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64 = reader.result as string;
-      setPreview(base64);
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const MAX = 800;
+      let w = img.width;
+      let h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = (h * MAX) / w; w = MAX; }
+        else { w = (w * MAX) / h; h = MAX; }
+      }
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext("2d")!.drawImage(img, 0, 0, w, h);
+      setPreview(canvas.toDataURL("image/jpeg", 0.8));
     };
-    reader.readAsDataURL(file);
+    img.src = URL.createObjectURL(file);
   }
 
   function handleContinue() {
     if (!match) return;
     if (preview) {
-      const updated = { ...match, playerPhoto: preview };
-      saveMatch(updated);
-      setMatch(updated);
+      saveMatch({ ...match, playerPhoto: preview });
     }
-    router.push("/story");
-  }
-
-  function handleSkip() {
     router.push("/story");
   }
 
   if (!match) return null;
 
   return (
-    <div className="flex flex-1 flex-col items-center px-6 py-8 max-w-md mx-auto w-full">
-      <h1 className="text-2xl font-bold mb-2">📸 Photo du joueur</h1>
-      <p className="text-gray-500 text-sm text-center mb-8">
-        Prends {match.playerName} en photo pour personnaliser la story
+    <div className="fixed inset-0 flex flex-col items-center px-6 py-8 bg-white">
+      <h1 className="text-2xl font-bold mb-1 flex-shrink-0">📸 Photo du joueur</h1>
+      <p className="text-gray-500 text-sm text-center mb-6 flex-shrink-0">
+        Prends {match.playerName} en photo pour la story
       </p>
 
       <input
@@ -59,13 +62,9 @@ export default function PhotoPage() {
       />
 
       {preview ? (
-        <div className="flex flex-col items-center gap-4 flex-1">
-          <div className="w-64 h-64 rounded-2xl overflow-hidden shadow-lg">
-            <img
-              src={preview}
-              alt="Photo du joueur"
-              className="w-full h-full object-cover"
-            />
+        <div className="flex flex-col items-center gap-3 flex-1 min-h-0 justify-center">
+          <div className="w-56 h-56 rounded-2xl overflow-hidden shadow-lg flex-shrink-0">
+            <img src={preview} alt="" className="w-full h-full object-cover" />
           </div>
           <button
             onClick={() => inputRef.current?.click()}
@@ -77,7 +76,7 @@ export default function PhotoPage() {
       ) : (
         <button
           onClick={() => inputRef.current?.click()}
-          className="flex-1 flex flex-col items-center justify-center w-full rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 active:bg-gray-100 transition-colors"
+          className="flex-1 flex flex-col items-center justify-center w-full rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 active:bg-gray-100 transition-colors min-h-0"
         >
           <span className="text-5xl mb-3">📷</span>
           <span className="text-lg font-semibold text-gray-600">
@@ -89,7 +88,7 @@ export default function PhotoPage() {
         </button>
       )}
 
-      <div className="w-full mt-8 space-y-3">
+      <div className="w-full mt-6 space-y-3 flex-shrink-0">
         <button
           onClick={handleContinue}
           className={`w-full rounded-xl py-4 font-bold text-lg transition-all active:scale-95 ${
@@ -100,14 +99,6 @@ export default function PhotoPage() {
         >
           {preview ? "Générer la story ✨" : "Continuer sans photo"}
         </button>
-        {!preview && (
-          <button
-            onClick={handleSkip}
-            className="w-full py-2 text-sm text-gray-400"
-          >
-            Passer cette étape
-          </button>
-        )}
       </div>
     </div>
   );

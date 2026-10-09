@@ -6,6 +6,7 @@ export type ActionType =
   | "tir_cadre"
   | "tir_non_cadre"
   | "duel_gagne"
+  | "duel_perdu"
   | "recuperation"
   | "ballon_perdu"
   | "arret"
@@ -44,7 +45,8 @@ export const ACTIONS: ActionConfig[] = [
   { type: "tir_cadre", label: "Tir cadré", emoji: "🎯", positions: ["ATT", "MIL", "DEF"], positive: true },
   { type: "tir_non_cadre", label: "Tir non cadré", emoji: "↗️", positions: ["ATT", "MIL", "DEF"], positive: false },
   { type: "duel_gagne", label: "Duel gagné", emoji: "💪", positions: ["ATT", "MIL", "DEF"], positive: true },
-  { type: "recuperation", label: "Récup", emoji: "🦶", positions: ["ATT", "MIL", "DEF"], positive: true },
+  { type: "duel_perdu", label: "Duel perdu", emoji: "😵", positions: ["ATT", "MIL", "DEF"], positive: false },
+  { type: "recuperation", label: "Ballon récup", emoji: "🦶", positions: ["ATT", "MIL", "DEF"], positive: true },
   { type: "ballon_perdu", label: "Ballon perdu", emoji: "❌", positions: ["ATT", "MIL", "DEF", "GK"], positive: false },
   { type: "arret", label: "Arrêt", emoji: "🧤", positions: ["GK"], positive: true },
   { type: "but_encaisse", label: "But encaissé", emoji: "😤", positions: ["GK"], positive: false },

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Position, POSITION_LABELS } from "@/lib/types";
 import { saveMatch } from "@/lib/storage";
+import { trackEvent } from "@/lib/analytics";
 
 const POSITIONS: Position[] = ["ATT", "MIL", "DEF", "GK"];
 
@@ -29,12 +30,13 @@ export default function SetupPage() {
       playerPhoto: null,
       matchDate: new Date().toISOString().split("T")[0],
     });
+    trackEvent("match_created", { position });
     router.push("/live");
   }
 
   return (
-    <div className="flex flex-1 flex-col px-6 py-8 max-w-md mx-auto w-full">
-      <div className="mb-8 text-center">
+    <div className="fixed inset-0 flex flex-col px-6 py-6 max-w-md mx-auto w-full">
+      <div className="text-center mb-4">
         <h1 className="text-3xl font-bold tracking-tight text-green-brand">
           KRAMPON
         </h1>
@@ -43,9 +45,9 @@ export default function SetupPage() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-6 flex-1">
+      <div className="flex flex-col gap-4 flex-1 min-h-0">
         <div>
-          <label className="block text-sm font-semibold mb-2">
+          <label className="block text-sm font-semibold mb-1">
             Nom du joueur
           </label>
           <input
@@ -58,13 +60,13 @@ export default function SetupPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold mb-2">Poste</label>
-          <div className="grid grid-cols-2 gap-3">
+          <label className="block text-sm font-semibold mb-1">Poste</label>
+          <div className="grid grid-cols-4 gap-2">
             {POSITIONS.map((pos) => (
               <button
                 key={pos}
                 onClick={() => setPosition(pos)}
-                className={`rounded-xl py-3 px-4 text-center font-semibold transition-all ${
+                className={`rounded-xl py-2.5 text-center font-semibold text-sm transition-all ${
                   position === pos
                     ? "bg-green-brand text-white shadow-lg scale-[1.02]"
                     : "bg-gray-100 text-gray-700 active:scale-95"
@@ -77,7 +79,7 @@ export default function SetupPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold mb-2">
+          <label className="block text-sm font-semibold mb-1">
             Équipe du joueur
           </label>
           <input
@@ -90,7 +92,7 @@ export default function SetupPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold mb-2">
+          <label className="block text-sm font-semibold mb-1">
             Adversaire
           </label>
           <input
@@ -106,7 +108,7 @@ export default function SetupPage() {
       <button
         onClick={handleStart}
         disabled={!canStart}
-        className={`mt-8 w-full rounded-xl py-4 text-lg font-bold transition-all ${
+        className={`mt-4 w-full rounded-xl py-4 text-lg font-bold transition-all flex-shrink-0 ${
           canStart
             ? "bg-green-brand text-white active:scale-95 shadow-lg"
             : "bg-gray-200 text-gray-400 cursor-not-allowed"
